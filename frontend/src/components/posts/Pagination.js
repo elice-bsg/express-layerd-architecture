@@ -13,7 +13,7 @@ const PaginationBlock = styled.div`
 const PageNumber = styled.div``;
 
 const buildLink = ({ username, page }) => {
-  const query = qs.stringify({  page });
+  const query = qs.stringify({ page });
   return username ? `/@${username}?${query}` : `/?${query}`;
 };
 
