@@ -7,6 +7,8 @@ const commonErrors = require('./misc/commonErrors');
 const utils = require('./misc/util');
 const {load} = require("nodemon/lib/rules");
 
+const {userRouter} = require('./user/router');
+
 async function createApp() {
     // mySql에 연결
     await loader.connectMySql();
@@ -23,7 +25,8 @@ async function createApp() {
         });
     });
 
-    // TODO api Router 등록
+    // api router 등록
+    expressApp.use("/api/v1/users", userRouter);
 
     // api Router에 해당하는 요청 외에 들어온 경우 처리
     expressApp.use((req, res, next) => {
