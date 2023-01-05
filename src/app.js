@@ -30,12 +30,6 @@ async function createApp() {
         secret: 'example!',
         resave: false,
         saveUninitialized: false,
-        store: new RedisStore({
-            client: redisClient,
-            host: config.redisHost,
-            port: config.redisPort,
-            ttl: 240,
-        }),
         cookie: {
             httpOnly: false,
             secure: false,
