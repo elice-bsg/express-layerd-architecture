@@ -22,7 +22,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
-
+.ida/
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -57,6 +57,7 @@
 
 # CMake
 cmake-build-*/
+.idia/*
 
 # Mongo Explorer plugin
 .idea/**/mongoSettings.xml
