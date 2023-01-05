@@ -17,7 +17,7 @@ async function verifyUser(username, password, done) {
                 done(null, false, { message: '아이디 혹은 비밀번호가 일치하지 않습니다' });
             }
         } else {
-            done(null, false, { message: '존재하지 않는 회원입니다. '});
+            done(null, false, { message: '존재하지 않는 회원입니다.'});
         }
     } catch(error) {
         console.error(error);
@@ -27,9 +27,8 @@ async function verifyUser(username, password, done) {
 
 function setPassport() {
     passport.use(new LocalStrategy({
-        usernameField: 'username',
-        passwordField: 'password',
-        passReqToCallback: false
+        usernameField: "username",
+        passwordField: "password"
     }, verifyUser));
 }
 

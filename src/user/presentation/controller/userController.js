@@ -25,7 +25,7 @@ const userController = {
         }
     },
 
-    login(req, res, next) {
+    async login(req, res, next) {
         passport.authenticate('local', (authError, user, message) => {
             if (authError) {
                 console.error(authError);

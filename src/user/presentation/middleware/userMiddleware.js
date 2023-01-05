@@ -47,7 +47,7 @@ const checkCreatable = (from) => (req, res, next) => {
     next();
 };
 
-const checkLogginable = (from) => (req, res, next) => {
+const checkLoginable = (from) => (req, res, next) => {
     const {username, password} = req[from];
 
     if (username === undefined) {
@@ -69,6 +69,8 @@ const checkLogginable = (from) => (req, res, next) => {
             )
         );
     }
+
+    next();
 };
 
 const isLoggedIn = (req, res, next) => {
@@ -101,7 +103,7 @@ const isNotLoggedIn = (req, res, next) => {
 
 module.exports = {
     checkCreatable,
-    checkLogginable,
+    checkLoginable,
     isLoggedIn,
     isNotLoggedIn
 };

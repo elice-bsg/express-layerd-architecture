@@ -3,7 +3,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
-const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 
 const loader = require('./loader');
@@ -23,8 +22,9 @@ async function createApp() {
     const expressApp = express();
 
     // session 설정
-    const redisClient = redis.createClient();
+    const redisClient = loader.getRedisClient();
 
+    expressApp.use(cookieParser());
     passportConfig();
     expressApp.use(session({
         secret: 'example!',
@@ -34,11 +34,12 @@ async function createApp() {
             client: redisClient,
             host: config.redisHost,
             port: config.redisPort,
-            ttl: 240
+            ttl: 240,
         }),
         cookie: {
-            httpOnly: true,
-            secure: false
+            httpOnly: false,
+            secure: false,
+            maxAge: 1000 * 60 * 4,
         }
     }));
     expressApp.use(passport.initialize());

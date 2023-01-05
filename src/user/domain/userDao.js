@@ -10,7 +10,7 @@ const userDao = {
 
     async findByUsername(username) {
         const foundUser = await User.findOne({
-            where: {username}
+            where: {username: username}
         });
 
         return foundUser;

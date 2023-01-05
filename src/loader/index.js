@@ -1,3 +1,5 @@
+const redis = require('redis');
+
 const {sequelize} = require('./db');
 
 async function connectMySql() {
@@ -18,7 +20,19 @@ async function disconnectMySql() {
     }
 }
 
+async function getRedisClient() {
+    const redisClient = redis.createClient({legacyMode: true});
+    try {
+        await redisClient.connect();
+        console.log("Redis에 연결 성공");
+        return redisClient;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 module.exports = {
     connectMySql,
-    disconnectMySql
+    disconnectMySql,
+    getRedisClient
 };

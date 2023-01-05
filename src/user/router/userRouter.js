@@ -4,6 +4,6 @@ const {userController, userMiddleware} = require('../presentation');
 const userRouter = Router();
 
 userRouter.post("/register", userMiddleware.isNotLoggedIn, userMiddleware.checkCreatable("body"), userController.registerUser);
-userRouter.post("/login", userMiddleware.isNotLoggedIn, userMiddleware.checkLogginable("body"), userController.login);
+userRouter.post("/login", userMiddleware.isNotLoggedIn, userMiddleware.checkLoginable("body"), userController.login);
 
 module.exports = userRouter;
