@@ -37,7 +37,7 @@ const checkCreatable = (from) => (req, res, next) => {
     if (email === undefined) {
         next(
             new AppError(
-                commonErrors,
+                commonErrors.inputError,
                 400,
                 `${from}: email은 필수값입니다.`
             )
@@ -47,6 +47,61 @@ const checkCreatable = (from) => (req, res, next) => {
     next();
 };
 
+const checkLogginable = (from) => (req, res, next) => {
+    const {username, password} = req[from];
+
+    if (username === undefined) {
+        next(
+            new AppError(
+                commonErrors.inputError,
+                400,
+                `${from}: username은 필수값입니다.`
+            )
+        );
+    }
+
+    if (password === undefined) {
+        next(
+            new AppError(
+                commonErrors.inputError,
+                400,
+                `${from}: password는 필수값입니다.`
+            )
+        );
+    }
+};
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        next(
+            new AppError(
+                commonErrors.authenticationError,
+                403,
+                "로그인이 필요합니다."
+            )
+        );
+    }
+};
+
+const isNotLoggedIn = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        next();
+    } else {
+        next(
+            new AppError(
+                commonErrors.authenticationError,
+                403,
+                "로그인한 상태입니다."
+            )
+        );
+    }
+};
+
 module.exports = {
-    checkCreatable
+    checkCreatable,
+    checkLogginable,
+    isLoggedIn,
+    isNotLoggedIn
 };

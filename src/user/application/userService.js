@@ -9,6 +9,18 @@ const userService = {
         });
 
         return createdUser;
+    },
+
+    async findUserByUsername(username) {
+        const foundUser = await userDao.findByUsername(username);
+
+        return foundUser;
+    },
+
+    async findUserById(id) {
+        const foundUser = await userDao.findById(id);
+
+        return foundUser;
     }
 };
 

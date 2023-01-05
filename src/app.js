@@ -1,11 +1,17 @@
 const http = require("http");
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const redis = require('redis');
+const RedisStore = require('connect-redis')(session);
+
 const loader = require('./loader');
 const config = require('./config');
+const passportConfig = require('./user/presentation/middleware/passport');
 const AppError = require('./misc/AppError');
 const commonErrors = require('./misc/commonErrors');
 const utils = require('./misc/util');
-const {load} = require("nodemon/lib/rules");
 
 const {userRouter} = require('./user/router');
 
@@ -16,6 +22,29 @@ async function createApp() {
     console.log("express application을 초기화합니다.");
     const expressApp = express();
 
+    // session 설정
+    const redisClient = redis.createClient();
+
+    passportConfig();
+    expressApp.use(session({
+        secret: 'example!',
+        resave: false,
+        saveUninitialized: false,
+        store: new RedisStore({
+            client: redisClient,
+            host: config.redisHost,
+            port: config.redisPort,
+            ttl: 240
+        }),
+        cookie: {
+            httpOnly: true,
+            secure: false
+        }
+    }));
+    expressApp.use(passport.initialize());
+    expressApp.use(passport.session());
+
+    // routing
     expressApp.use(express.json());
 
     // for HeartBeat

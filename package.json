@@ -18,10 +18,17 @@
   },
   "homepage": "https://github.com/BrianDYKim/express-layerd-architecture#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "connect-redis": "^6.1.3",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "redis": "^4.5.1",
     "sequelize": "^6.28.0",
     "sequelize-cli": "^6.5.2"
   },
