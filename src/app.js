@@ -1,19 +1,49 @@
 const http = require("http");
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
+
 const loader = require('./loader');
 const config = require('./config');
+const passportConfig = require('./user/presentation/middleware/passport');
 const AppError = require('./misc/AppError');
 const commonErrors = require('./misc/commonErrors');
 const utils = require('./misc/util');
-const {load} = require("nodemon/lib/rules");
+
+const {userRouter} = require('./user/router');
 
 async function createApp() {
     // mySql에 연결
     await loader.connectMySql();
 
+    // MongoDB에 연결
+    await loader.connectMongoDB();
+
     console.log("express application을 초기화합니다.");
     const expressApp = express();
 
+    const db = mongoose.connection;
+
+    expressApp.use(cookieParser());
+    passportConfig();
+    expressApp.use(session({
+        secret: 'example!',
+        resave: false,
+        saveUninitialized: false,
+        store: new MongoStore({mongoUrl: db.client.s.url}),
+        cookie: {
+            httpOnly: false,
+            secure: false,
+            maxAge: 1000 * 60 * 4,
+        }
+    }));
+    expressApp.use(passport.initialize());
+    expressApp.use(passport.session());
+
+    // routing
     expressApp.use(express.json());
 
     // for HeartBeat
@@ -23,7 +53,8 @@ async function createApp() {
         });
     });
 
-    // TODO api Router 등록
+    // api router 등록
+    expressApp.use("/api/v1/users", userRouter);
 
     // api Router에 해당하는 요청 외에 들어온 경우 처리
     expressApp.use((req, res, next) => {
@@ -68,6 +99,7 @@ async function createApp() {
                     }
                     console.log("- 들어오는 커넥션을 더 이상 받지 않도록 하였습니다.");
                     await loader.disconnectMySql();
+                    await loader.disconnectMongoDB();
                     console.log("- DB 커넥션을 정상적으로 끊었습니다.");
                     console.log("🟢 서버 중지 작업을 성공적으로 마쳤습니다.");
                     this.isShuttingDown = false;
