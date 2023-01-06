@@ -52,6 +52,13 @@ const userController = {
                 return res.status(200).json(responseBody);
             })
         })(req, res, next);
+    },
+
+    logout(req, res, next) {
+        req.logout(() => {
+            const responseBody = utils.buildResponse('로그아웃 성공');
+            res.status(200).json(responseBody);
+        });
     }
 };
 

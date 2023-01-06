@@ -3,7 +3,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
-const RedisStore = require('connect-redis')(session);
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
 const loader = require('./loader');
 const config = require('./config');
@@ -18,11 +19,13 @@ async function createApp() {
     // mySql에 연결
     await loader.connectMySql();
 
+    // MongoDB에 연결
+    await loader.connectMongoDB();
+
     console.log("express application을 초기화합니다.");
     const expressApp = express();
 
-    // session 설정
-    const redisClient = loader.getRedisClient();
+    const db = mongoose.connection;
 
     expressApp.use(cookieParser());
     passportConfig();
@@ -30,6 +33,7 @@ async function createApp() {
         secret: 'example!',
         resave: false,
         saveUninitialized: false,
+        store: new MongoStore({mongoUrl: db.client.s.url}),
         cookie: {
             httpOnly: false,
             secure: false,
@@ -95,6 +99,7 @@ async function createApp() {
                     }
                     console.log("- 들어오는 커넥션을 더 이상 받지 않도록 하였습니다.");
                     await loader.disconnectMySql();
+                    await loader.disconnectMongoDB();
                     console.log("- DB 커넥션을 정상적으로 끊었습니다.");
                     console.log("🟢 서버 중지 작업을 성공적으로 마쳤습니다.");
                     this.isShuttingDown = false;

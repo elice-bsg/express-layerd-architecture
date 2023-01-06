@@ -16,12 +16,10 @@ if (envFound.error) {
     );
 }
 
-process.env.REDIS_HOST = process.env.REDIS_HOST ?? 'localhost';
-process.env.REDIS_PORT = process.env.REDIS_PORT ?? 6379;
+const mongoDbUrl = process.env.MONGODB_URL ?? 'mongodb://localhost:27017';
 
 module.exports = {
     applicationName: process.env.APPLICATION_NAME || "app",
     port: parseInt(process.env.PORT ?? "3000", 10),
-    redisHost: process.env.REDIS_HOST,
-    redisPort: process.env.REDIS_PORT
+    mongoDbUrl:mongoDbUrl
 };
